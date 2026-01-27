@@ -2,15 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="vertical"
+    android:gravity="center"
     android:padding="24dp">
 
     <EditText
         android:id="@+id/emailInput"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:hint="Digite seu email"
+        android:hint="Digite seu e-mail"
         android:inputType="textEmailAddress" />
 
     <Button
@@ -19,4 +19,5 @@
         android:layout_height="wrap_content"
         android:text="Salvar"
         android:layout_marginTop="16dp" />
+
 </LinearLayout>

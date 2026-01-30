@@ -9,10 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center"
+        android:gravity="center_horizontal"
         android:padding="24dp">
 
-        <!-- LOGO / TÍTULO -->
+        <!-- TÍTULO -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
                 android:id="@+id/editEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Digite seu email"
+                android:hint="Digite o email do dispositivo"
                 android:inputType="textEmailAddress"
                 android:textColor="#FFFFFF"
                 android:textColorHint="#999999"
@@ -87,89 +87,91 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- TÍTULO JOGOS -->
-        <TextView
+        <!-- STATUS -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Jogos Disponíveis"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="16dp"
-            android:paddingStart="8dp" />
+            android:orientation="vertical"
+            android:background="@drawable/card_background"
+            android:padding="20dp"
+            android:layout_marginBottom="28dp">
 
-        <!-- BOTÕES DE JOGOS -->
-        <Button
-            android:id="@+id/btnBeatSaber"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="🎵 Beat Saber"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/button_game"
-            android:padding="18dp"
-            android:layout_marginBottom="12dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📊 Status do dispositivo"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#FFFFFF"
+                android:layout_marginBottom="12dp" />
 
-        <Button
-            android:id="@+id/btnBlaston"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="🔫 Blaston"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/button_game"
-            android:padding="18dp"
-            android:layout_marginBottom="12dp" />
+            <TextView
+                android:id="@+id/txtStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Status: -"
+                android:textColor="#CCCCCC"
+                android:layout_marginBottom="6dp" />
 
-        <Button
-            android:id="@+id/btnHyperDash"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="⚡ Hyper Dash"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/button_game"
-            android:padding="18dp"
-            android:layout_marginBottom="12dp" />
+            <TextView
+                android:id="@+id/txtBattery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bateria: -"
+                android:textColor="#CCCCCC"
+                android:layout_marginBottom="6dp" />
 
-        <Button
-            android:id="@+id/btnCreed"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="🥊 Creed"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/button_game"
-            android:padding="18dp"
-            android:layout_marginBottom="12dp" />
+            <TextView
+                android:id="@+id/txtIp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="IP: -"
+                android:textColor="#CCCCCC"
+                android:layout_marginBottom="6dp" />
 
-        <Button
-            android:id="@+id/btnSpatialOps"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="🎯 Spatial Ops"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/button_game"
-            android:padding="18dp"
-            android:layout_marginBottom="12dp" />
+            <TextView
+                android:id="@+id/txtCurrentApp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="App atual: -"
+                android:textColor="#CCCCCC"
+                android:layout_marginBottom="6dp" />
 
-        <Button
-            android:id="@+id/btnHomeInvasion"
+            <TextView
+                android:id="@+id/txtLastUpdate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Última atualização: -"
+                android:textColor="#888888" />
+        </LinearLayout>
+
+        <!-- LOG -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="🧟 Home Invasion"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/button_game"
-            android:padding="18dp"
-            android:layout_marginBottom="24dp" />
+            android:orientation="vertical"
+            android:background="@drawable/card_background"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📜 Log do dispositivo"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#FFFFFF"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:id="@+id/txtLog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#CCCCCC"
+                android:textSize="13sp"
+                android:background="#121212"
+                android:padding="12dp"
+                android:minHeight="180dp" />
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

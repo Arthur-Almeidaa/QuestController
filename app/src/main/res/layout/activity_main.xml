@@ -1,52 +1,175 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="24dp"
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#1A1A1A"
+    android:fillViewport="true">
 
-    <!-- EMAIL (só aparece na primeira vez) -->
-    <EditText
-        android:id="@+id/editEmail"
-        android:hint="Digite seu email"
-        android:inputType="textEmailAddress"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="24dp">
 
-    <Button
-        android:id="@+id/btnSaveEmail"
-        android:text="Salvar email"
-        android:layout_marginTop="12dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        <!-- LOGO / TÍTULO -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🎮 Quest Controller"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="32dp" />
 
-    <!-- JOGOS -->
-    <Button
-        android:id="@+id/btnBeatSaber"
-        android:text="Abrir Beat Saber"
-        android:layout_marginTop="32dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        <!-- CARD EMAIL -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_background"
+            android:padding="20dp"
+            android:layout_marginBottom="28dp">
 
-    <Button
-        android:id="@+id/btnBlaston"
-        android:text="Abrir Blaston"
-        android:layout_marginTop="12dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/txtEmailAtual"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="✅ Conectado"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#4CAF50"
+                android:gravity="center"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone" />
 
-    <Button
-        android:id="@+id/btnBrowser"
-        android:text="Abrir Navegador"
-        android:layout_marginTop="12dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+            <EditText
+                android:id="@+id/editEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Digite seu email"
+                android:inputType="textEmailAddress"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#999999"
+                android:background="@drawable/edittext_background"
+                android:padding="16dp"
+                android:layout_marginBottom="14dp" />
 
-    <Button
-        android:id="@+id/btnHyperDash"
-        android:text="Abrir Hyper Dash"
-        android:layout_marginTop="12dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-</LinearLayout>
+                <Button
+                    android:id="@+id/btnSaveEmail"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="💾 Salvar"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:background="@drawable/button_primary"
+                    android:padding="16dp"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/btnTrocarEmail"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="🔄 Trocar"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:background="@drawable/button_secondary"
+                    android:padding="16dp"
+                    android:layout_marginStart="8dp"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- TÍTULO JOGOS -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Jogos Disponíveis"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="16dp"
+            android:paddingStart="8dp" />
+
+        <!-- BOTÕES DE JOGOS -->
+        <Button
+            android:id="@+id/btnBeatSaber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🎵 Beat Saber"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/button_game"
+            android:padding="18dp"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnBlaston"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🔫 Blaston"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/button_game"
+            android:padding="18dp"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnHyperDash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="⚡ Hyper Dash"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/button_game"
+            android:padding="18dp"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnCreed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🥊 Creed"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/button_game"
+            android:padding="18dp"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnSpatialOps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🎯 Spatial Ops"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/button_game"
+            android:padding="18dp"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnHomeInvasion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🧟 Home Invasion"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/button_game"
+            android:padding="18dp"
+            android:layout_marginBottom="24dp" />
+
+    </LinearLayout>
+</ScrollView>

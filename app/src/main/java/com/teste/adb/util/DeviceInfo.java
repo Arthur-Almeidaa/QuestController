@@ -1,19 +1,18 @@
 package com.teste.adb.util;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
-import android.os.BatteryManager;
 import android.text.format.Formatter;
+import android.os.BatteryManager;
 
 public class DeviceInfo {
 
     public static int getBatteryLevel(Context context) {
-        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        Intent batteryStatus = context.registerReceiver(null, ifilter);
-
-        if (batteryStatus == null) return -1;
+        IntentFilter iFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent batteryStatus = context.registerReceiver(null, iFilter);
 
         int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
@@ -22,18 +21,23 @@ public class DeviceInfo {
     }
 
     public static String getLocalIp(Context context) {
-        try {
-            WifiManager wifiManager =
-                    (WifiManager) context.getApplicationContext()
-                            .getSystemService(Context.WIFI_SERVICE);
+        WifiManager wm = (WifiManager) context.getApplicationContext()
+                .getSystemService(Context.WIFI_SERVICE);
 
-            if (wifiManager == null) return "0.0.0.0";
+        return Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+    }
 
-            int ip = wifiManager.getConnectionInfo().getIpAddress();
-            return Formatter.formatIpAddress(ip);
+    public static String getSavedEmail(Context context) {
+        SharedPreferences prefs =
+                context.getSharedPreferences("device_prefs", Context.MODE_PRIVATE);
+        return prefs.getString("email", null);
+    }
 
-        } catch (Exception e) {
-            return "0.0.0.0";
-        }
+    public static void saveEmail(Context context, String email) {
+        SharedPreferences prefs =
+                context.getSharedPreferences("device_prefs", Context.MODE_PRIVATE);
+        prefs.edit().putString("email", email).apply();
     }
 }
+
+

@@ -166,9 +166,9 @@ public class MainActivity extends AppCompatActivity {
         try {
             Intent intent = null;
 
-            // ===== JOGOS VR QUE EXIGEM INTENT EXPLÍCITO =====
             switch (action) {
 
+                // ===== VR FIXOS (EXPLÍCITOS) =====
                 case "hyperdash":
                     intent = new Intent();
                     intent.setClassName(
@@ -177,18 +177,15 @@ public class MainActivity extends AppCompatActivity {
                     );
                     break;
 
-                case "gorillatag":
+                case "blaston":
                     intent = new Intent(Intent.ACTION_MAIN);
                     intent.addCategory(Intent.CATEGORY_LAUNCHER);
                     intent.addCategory("com.oculus.intent.category.VR");
                     intent.setClassName(
-                            "com.AnotherAxiom.GorillaTag",
+                            "com.resolutiongames.ignis",
                             "com.unity3d.player.UnityPlayerActivity"
                     );
                     break;
-
-
-
 
                 case "homeinvasion":
                     intent = new Intent(Intent.ACTION_MAIN);
@@ -200,18 +197,20 @@ public class MainActivity extends AppCompatActivity {
                     );
                     break;
 
-                // ===== TODOS OS OUTROS (DINÂMICO DO SITE) =====
+                // ===== DINÂMICO (SITE / FIREBASE) =====
                 default:
                     String pkg = appPackages.get(action);
 
-                    if (pkg == null || !isInstalled(pkg)) {
-                        responder(commandId, "error", "App não instalado");
-                        log("App não instalado: " + action);
+                    if (pkg == null) {
+                        responder(commandId, "error", "App não encontrado");
+                        log("App não encontrado: " + action);
                         return;
                     }
 
+                    // 1º tentativa: launcher normal
                     intent = getPackageManager().getLaunchIntentForPackage(pkg);
 
+                    // 2º tentativa: VR Unity padrão
                     if (intent == null) {
                         intent = new Intent(Intent.ACTION_MAIN);
                         intent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -233,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
             log("Erro ao abrir " + action + ": " + e.getMessage());
         }
     }
+
 
 
     private void responder(String id, String status, String msg) {

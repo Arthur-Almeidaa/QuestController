@@ -2,6 +2,7 @@ package com.teste.adb;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ResolveInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
@@ -20,10 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.database.*;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_EMAIL = "email";
 
     private EditText edtEmail;
-    private TextView txtEmailAtual, txtStatus, txtBattery, txtIp, txtLastUpdate, txtCurrentApp, txtLog;
+    private TextView txtStatus, txtBattery, txtIp, txtLastUpdate, txtCurrentApp, txtLog;
     private Button btnSalvar, btnTrocar;
 
     private DatabaseReference rootRef, deviceRef;
@@ -48,16 +46,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         edtEmail = findViewById(R.id.editEmail);
-        txtEmailAtual = findViewById(R.id.txtEmailAtual);
-        btnSalvar = findViewById(R.id.btnSaveEmail);
-        btnTrocar = findViewById(R.id.btnTrocarEmail);
-
         txtStatus = findViewById(R.id.txtStatus);
         txtBattery = findViewById(R.id.txtBattery);
         txtIp = findViewById(R.id.txtIp);
         txtLastUpdate = findViewById(R.id.txtLastUpdate);
         txtCurrentApp = findViewById(R.id.txtCurrentApp);
         txtLog = findViewById(R.id.txtLog);
+
+        btnSalvar = findViewById(R.id.btnSaveEmail);
+        btnTrocar = findViewById(R.id.btnTrocarEmail);
 
         SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         String saved = prefs.getString(KEY_EMAIL, null);
@@ -119,8 +116,6 @@ public class MainActivity extends AppCompatActivity {
         log("Conectado ao servidor");
     }
 
-    /* ===================== APPS ===================== */
-
     private void carregarApps() {
         rootRef.child("availableApps").addValueEventListener(new ValueEventListener() {
             @Override
@@ -161,14 +156,33 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /* ===================== EXECUTAR ===================== */
+
     private void executar(String commandId, String action) {
-
         try {
-            Intent intent = null;
+            Intent intent;
 
+            // ===== HOME =====
+            if ("home".equals(action)) {
+                voltarAoMenu();
+                responder(commandId, "success", "Menu principal");
+                return;
+            }
+
+            // ===== BEAT SABER (MANUAL - BLOQUEADO PELO SISTEMA) =====
+            if ("beatsaber".equals(action)) {
+                responder(
+                        commandId,
+                        "info",
+                        "Abra o Beat Saber manualmente no menu do Quest"
+                );
+                log("🎵 Beat Saber é protegido pelo sistema");
+                return;
+            }
+
+            // ===== APPS VR FIXOS =====
             switch (action) {
 
-                // ===== VR FIXOS (EXPLÍCITOS) =====
                 case "hyperdash":
                     intent = new Intent();
                     intent.setClassName(
@@ -178,44 +192,31 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case "blaston":
-                    intent = new Intent(Intent.ACTION_MAIN);
-                    intent.addCategory(Intent.CATEGORY_LAUNCHER);
-                    intent.addCategory("com.oculus.intent.category.VR");
-                    intent.setClassName(
-                            "com.resolutiongames.ignis",
-                            "com.unity3d.player.UnityPlayerActivity"
-                    );
+                    intent = vrIntent("com.resolutiongames.ignis");
                     break;
 
                 case "homeinvasion":
-                    intent = new Intent(Intent.ACTION_MAIN);
-                    intent.addCategory(Intent.CATEGORY_LAUNCHER);
-                    intent.addCategory("com.oculus.intent.category.VR");
-                    intent.setClassName(
-                            "com.soulassembly.homeinvasion",
-                            "com.unity3d.player.UnityPlayerActivity"
-                    );
+                    intent = vrIntent("com.soulassembly.homeinvasion");
                     break;
 
-                // ===== DINÂMICO (SITE / FIREBASE) =====
+                case "trolin":
+                    intent = vrIntent("com.resolutiongames.trolin");
+                    break;
+
+                // ===== APPS NORMAIS (DINÂMICO DO FIREBASE) =====
                 default:
                     String pkg = appPackages.get(action);
-
                     if (pkg == null) {
                         responder(commandId, "error", "App não encontrado");
                         log("App não encontrado: " + action);
                         return;
                     }
 
-                    // 1º tentativa: launcher normal
-                    intent = getPackageManager().getLaunchIntentForPackage(pkg);
-
-                    // 2º tentativa: VR Unity padrão
+                    intent = getLauncherIntent(pkg);
                     if (intent == null) {
-                        intent = new Intent(Intent.ACTION_MAIN);
-                        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-                        intent.addCategory("com.oculus.intent.category.VR");
-                        intent.setClassName(pkg, "com.unity3d.player.UnityPlayerActivity");
+                        responder(commandId, "error", "Launcher não encontrado");
+                        log("Launcher não encontrado: " + pkg);
+                        return;
                     }
                     break;
             }
@@ -229,11 +230,46 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (Exception e) {
             responder(commandId, "error", "Falha ao abrir app");
-            log("Erro ao abrir " + action + ": " + e.getMessage());
+            log("Erro: " + e.getMessage());
         }
     }
 
+    /* ===================== HELPERS ===================== */
 
+    private Intent vrIntent(String pkg) {
+        Intent i = new Intent(Intent.ACTION_MAIN);
+        i.addCategory(Intent.CATEGORY_LAUNCHER);
+        i.addCategory("com.oculus.intent.category.VR");
+        i.setClassName(pkg, "com.unity3d.player.UnityPlayerActivity");
+        return i;
+    }
+
+    private Intent getLauncherIntent(String packageName) {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.setPackage(packageName);
+
+        List<ResolveInfo> list =
+                getPackageManager().queryIntentActivities(intent, 0);
+
+        if (list != null && !list.isEmpty()) {
+            ResolveInfo ri = list.get(0);
+            Intent launch = new Intent(Intent.ACTION_MAIN);
+            launch.setClassName(
+                    ri.activityInfo.packageName,
+                    ri.activityInfo.name
+            );
+            return launch;
+        }
+        return null;
+    }
+
+    private void voltarAoMenu() {
+        Intent i = new Intent(Intent.ACTION_MAIN);
+        i.addCategory(Intent.CATEGORY_HOME);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
+    }
 
     private void responder(String id, String status, String msg) {
         Map<String, Object> r = new HashMap<>();
@@ -252,9 +288,8 @@ public class MainActivity extends AppCompatActivity {
                 txtStatus.setText("Status: " + s.child("status").getValue());
                 txtBattery.setText("Bateria: " + getBattery() + "%");
                 txtIp.setText("IP: " + getIp());
-                txtCurrentApp.setText("App atual: " + s.child("currentApp").getValue());
-                txtLastUpdate.setText("Última atualização: " +
-                        hora(s.child("lastUpdate").getValue(Long.class)));
+                txtCurrentApp.setText("App: " + s.child("currentApp").getValue());
+                txtLastUpdate.setText(hora(s.child("lastUpdate").getValue(Long.class)));
             }
 
             @Override public void onCancelled(@NonNull DatabaseError error) {}
@@ -267,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
         heartbeat.postDelayed(new Runnable() {
             @Override
             public void run() {
-                deviceRef.child("status").setValue("online");
+                deviceRef.child("battery").setValue(getBattery());
                 deviceRef.child("lastUpdate").setValue(System.currentTimeMillis());
                 heartbeat.postDelayed(this, 15000);
             }
@@ -277,37 +312,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (deviceRef != null) {
-            deviceRef.child("status").setValue("offline");
-        }
+        if (deviceRef != null) deviceRef.child("status").setValue("offline");
         heartbeat.removeCallbacksAndMessages(null);
     }
 
     /* ===================== UTIL ===================== */
 
-    private void log(String msg) {
-        txtLog.append("\n" + hora(System.currentTimeMillis()) + " — " + msg);
-    }
-
-    private String hora(Long t) {
-        if (t == null) return "-";
-        return new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date(t));
-    }
-
-    private boolean isInstalled(String pkg) {
-        try {
-            getPackageManager().getPackageInfo(pkg, 0);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
     private int getBattery() {
         BatteryManager bm = (BatteryManager) getSystemService(BATTERY_SERVICE);
-        return bm != null
-                ? bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
-                : -1;
+        return bm != null ? bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY) : -1;
     }
 
     private String getIp() {
@@ -318,5 +331,14 @@ public class MainActivity extends AppCompatActivity {
                 ((ip >> 8) & 255) + "." +
                 ((ip >> 16) & 255) + "." +
                 ((ip >> 24) & 255);
+    }
+
+    private void log(String msg) {
+        txtLog.append("\n" + hora(System.currentTimeMillis()) + " — " + msg);
+    }
+
+    private String hora(Long t) {
+        if (t == null) return "-";
+        return new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date(t));
     }
 }

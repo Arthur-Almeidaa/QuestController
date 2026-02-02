@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.teste.adb">
 
     <!-- PERMISSÕES -->
@@ -7,6 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <application
         android:allowBackup="true"
@@ -14,7 +16,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat">
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+        <!-- FOREGROUND SERVICE -->
+        <service
+            android:name=".QuestMonitorService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync"
+            tools:ignore="ForegroundServicePermission" />
 
         <!-- ACTIVITY PRINCIPAL -->
         <activity
@@ -28,9 +37,9 @@
             </intent-filter>
         </activity>
 
-        <!-- BROADCAST RECEIVER PARA BOOT -->
+        <!-- RECEIVER PARA BOOT -->
         <receiver
-            android:name=".Bootreceiver"
+            android:name=".BootReceiver"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">

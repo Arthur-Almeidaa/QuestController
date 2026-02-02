@@ -116,7 +116,12 @@ public class MainActivity extends AppCompatActivity {
     /* ===================== FIREBASE ===================== */
 
     private void conectar(String email) {
+
+        // 1️⃣ Define o deviceId PRIMEIRO
         deviceId = email.split("@")[0];
+        DeviceSession.deviceId = deviceId;
+
+        // 2️⃣ Inicializa Firebase
         rootRef = FirebaseDatabase.getInstance().getReference();
         deviceRef = rootRef.child("devices").child(deviceId);
 
@@ -129,10 +134,15 @@ public class MainActivity extends AppCompatActivity {
 
         deviceRef.setValue(data);
 
+        // 3️⃣ SÓ AGORA inicia o Service
+        Intent service = new Intent(this, QuestMonitorService.class);
+        startForegroundService(service);
+
+        // 4️⃣ Restante da lógica
         carregarApps();
         ouvirComandos();
         ouvirStatus();
-        iniciarHeartbeat();
+
         log("Conectado ao servidor");
     }
 
@@ -221,6 +231,14 @@ public class MainActivity extends AppCompatActivity {
 
                 case "trolin":
                     intent = vrIntent("com.resolutiongames.trolin");
+                    break;
+
+                case "creed":
+                    intent = new Intent();
+                    intent.setClassName(
+                            "com.survios.Creed",
+                            "com.unity3d.player.UnityPlayerActivity"
+                    );
                     break;
 
                 // ===== APPS NORMAIS (DINÂMICO DO FIREBASE) =====

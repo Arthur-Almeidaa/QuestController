@@ -72,18 +72,38 @@ public class MainActivity extends AppCompatActivity {
     /* ===================== EMAIL ===================== */
 
     private void salvarEmail() {
-        String email = edtEmail.getText().toString().trim();
-        if (TextUtils.isEmpty(email) || !email.contains("@")) {
+        String input = edtEmail.getText().toString().trim();
+
+        if (TextUtils.isEmpty(input)) {
+            Toast.makeText(this, "Digite o email", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String email;
+
+        // 👉 Se NÃO tiver "@", completa com @gmail.com
+        if (!input.contains("@")) {
+            email = input + "@gmail.com";
+        } else {
+            email = input;
+        }
+
+        // Validação final simples
+        if (!email.contains("@") || !email.contains(".")) {
             Toast.makeText(this, "Email inválido", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Salva no SharedPreferences
         getSharedPreferences(PREFS, MODE_PRIVATE)
                 .edit()
                 .putString(KEY_EMAIL, email)
                 .apply();
 
+        // Atualiza o campo visualmente já com o email completo
+        edtEmail.setText(email);
         edtEmail.setEnabled(false);
+
         conectar(email);
     }
 
